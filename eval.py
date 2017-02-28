@@ -20,6 +20,9 @@ import os
 import math
 import argparse
 
+def compat_splitting(line):
+    return line.decode('utf8').split()
+
 def similarity(v1, v2):
     n1 = np.linalg.norm(v1)
     n2 = np.linalg.norm(v2)
@@ -31,10 +34,10 @@ parser.add_argument('--data', '-d', dest='dataPath', action='store', required=Tr
 args = parser.parse_args()
 
 vectors = {}
-fin = open(args.modelPath, 'r')
+fin = open(args.modelPath, 'rb')
 for i, line in enumerate(fin):
     try:
-        tab = line.decode('utf8').split()
+        tab = compat_splitting(line)
         vec = np.array(tab[1:], dtype=float)
         word = tab[0]
         if not word in vectors:
@@ -50,9 +53,9 @@ gold = []
 drop = 0.0
 nwords = 0.0
 
-fin = open(args.dataPath, 'r')
+fin = open(args.dataPath, 'rb')
 for line in fin:
-    tline = line.decode('utf8').split()
+    tline = compat_splitting(line)
     word1 = tline[0].lower()
     word2 = tline[1].lower()
     nwords = nwords + 1.0
